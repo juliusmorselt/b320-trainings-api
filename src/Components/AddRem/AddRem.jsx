@@ -5,27 +5,29 @@ import React, { useState, useEffect } from 'react'
 import Update from '../Update/Update'
 
 //React Icons
-import {AiOutlinePlus, AiOutlineMinus} from 'react-icons/ai'
+import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
+import { FiRefreshCcw } from 'react-icons/fi'
 
 export default function AddRem({categorie}) {
     
     const [newType, setNewType] = useState(null)
     const [newBookClick, setNewBookClick] = useState(false)
     const [remBookClick, setRemBookClick] = useState(false)
+    const [updateBookClick, setUpdateBookClick] = useState(false)
 
     const [newAuthorClick, setNewAuthorClick] = useState(false)
     const [remAuthorClick, setRemAuthorClick] = useState(false)
+    const [updateAuthorClick, setUpdateAuthorClick] = useState(false)
 
     const [newGenreClick, setNewGenreClick] = useState(false)
     const [remGenreClick, setRemGenreClick] = useState(false)
+    const [updateGenreClick, setUpdateGenreClick] = useState(false)
 
-    const remAddClass = 'hover:scale-125 cursor-pointer transition-all'
-
-    useEffect(() => {
-        if (categorie) {
+    useEffect(() => 
+    {
+        if (categorie) 
+        {
             setNewType(categorie)
-        } else {
-            console.log("No category")
         }
     }, [categorie])
 
@@ -34,7 +36,9 @@ export default function AddRem({categorie}) {
 
             {newType === "boek" && (
                 <React.Fragment>
-                    <AiOutlinePlus className={remAddClass} onClick={setNewBookClick} /> <AiOutlineMinus className={remAddClass} onClick={setRemBookClick} />
+                    <AiOutlinePlus className='functionalityIcons' onClick={setNewBookClick} /> 
+                    <AiOutlineMinus className='functionalityIcons' onClick={setRemBookClick} /> 
+                    <FiRefreshCcw className='functionalityIcons' onClick={setUpdateBookClick} />
 
                     {/* Add new book */}
                     {newBookClick && (
@@ -46,12 +50,19 @@ export default function AddRem({categorie}) {
                         <Update func={'rem'} cat={newType} onClose={() => setRemBookClick(false)} />
                     )}
 
+                    {/* Update book */}
+                    {updateBookClick && (
+                        <Update func={'upd'} cat={newType} onClose={() => setUpdateBookClick(false)} />
+                    )}
+
                 </React.Fragment>
             )}
 
             {newType === "schrijver" && (
                 <React.Fragment>
-                    <AiOutlinePlus className={remAddClass} onClick={setNewAuthorClick} /> <AiOutlineMinus className={remAddClass} onClick={setRemAuthorClick} />
+                    <AiOutlinePlus className='functionalityIcons' onClick={setNewAuthorClick} /> 
+                    <AiOutlineMinus className='functionalityIcons' onClick={setRemAuthorClick} />
+                    <FiRefreshCcw className='functionalityIcons' onClick={setUpdateAuthorClick} />
 
                     {/* Add new author */}
                     {newAuthorClick && (
@@ -62,13 +73,20 @@ export default function AddRem({categorie}) {
                     {remAuthorClick && (
                         <Update func={'rem'} cat={newType} onClose={() => setRemAuthorClick(false)} />
                     )}
+
+                    {/* Update author */}
+                    {updateAuthorClick && (
+                        <Update func={'upd'} cat={newType} onClose={() => setUpdateAuthorClick(false)} />
+                    )}
                     
                 </React.Fragment>
             )}
 
             {newType === "genre" && (
                 <React.Fragment>
-                    <AiOutlinePlus className={remAddClass} onClick={setNewGenreClick} /> <AiOutlineMinus className={remAddClass} onClick={setRemGenreClick} />
+                    <AiOutlinePlus className='functionalityIcons' onClick={setNewGenreClick} /> 
+                    <AiOutlineMinus className='functionalityIcons' onClick={setRemGenreClick} />
+                    <FiRefreshCcw className='functionalityIcons' onClick={setUpdateGenreClick} />
 
                     {/* Add new book */}
                     {newGenreClick && (
@@ -78,6 +96,11 @@ export default function AddRem({categorie}) {
                     {/* Add new book */}
                     {remGenreClick && (
                         <Update func={'rem'} cat={newType} onClose={() => setRemGenreClick(false)} />
+                    )}
+
+                    {/* Update genre */}
+                    {updateGenreClick && (
+                        <Update func={'upd'} cat={newType} onClose={() => setUpdateGenreClick(false)} />
                     )}
                     
                 </React.Fragment>

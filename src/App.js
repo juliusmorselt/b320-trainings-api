@@ -1,8 +1,7 @@
-import ThreeLists from "./Components/ThreeLists/ThreeLists";
-function App() {
-  return (
-    <ThreeLists />
-  );
+import ThreeLists from "./Components/ThreeLists/ThreeLists"
+function App () 
+{
+    return <ThreeLists />
 }
 
-export default App;
+export default App
