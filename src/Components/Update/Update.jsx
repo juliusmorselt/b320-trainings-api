@@ -1,21 +1,18 @@
 //React
-import React, {useEffect, useState} from 'react'
+import React, { useState } from 'react'
 
 //React Icons
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
 //Functions
-import { fetchBooks, fetchAuthors, fetchGenres } from "../../functions";
-
-//Functions
 import { addBook, deleteBook, updateBook, addAuthor, deleteAuthor, updateAuthor, addGenre, deleteGenre, updateGenre } from '../../functions'
+
+//AppContext
+import { useAppContext } from '../../AppContext';
 
 export default function Update({func, cat, onClose}) 
 {
-
-    const [books, setBooks] = useState([])
-    const [authors, setAuthors] = useState([])
-    const [genres, setGenres] = useState([])
+    const { books, setBooks, authors, setAuthors, genres, setGenres } = useAppContext();
 
     //Book states (2)
     const [bookName, setBookName] = useState('')
@@ -42,31 +39,6 @@ export default function Update({func, cat, onClose})
     //Genre handles (2)
     const handleNewGenreName = (event) => { setGenreName(event.target.value) }
     const handleGenreSelect = (event) => { setSpecifiedGenreIds(event.target.value) }
-
-    useEffect(() => 
-    {
-        fetchBooks()
-            .then((booksRes) => { setBooks(booksRes) })
-            .catch((error) => 
-            {
-                console.error("Error in useEffect:", error)
-            })
-        
-        fetchAuthors()
-            .then((authorsRes) => { setAuthors(authorsRes) })
-            .catch((error) => 
-            {
-                console.error("Error in useEffect:", error)
-            })
-        
-        fetchGenres()
-            .then((genresRes) => { setGenres(genresRes) })
-            .catch((error) => 
-            {
-                console.error("Error in useEffect:", error)
-            })
-        
-    }, [])
     
     return (
         <div className='popup'>
@@ -95,14 +67,18 @@ export default function Update({func, cat, onClose})
                             {func === "add" && (
                                 <React.Fragment>
 
-                                    <input className='text-black placeholder:text-black' value={bookName} onChange={handleNewBookName} placeholder="Naam van boek" />
-                                    <div className="flex gap-2 items-center my-3">
+                                    <div className="customFlex">
+                                        <p className='w-1/2'>Naam van boek: </p>
+                                        <input className='text-black placeholder:text-black' value={bookName} onChange={handleNewBookName}/>
+                                    </div>
+                                   
+                                    <div className="customFlex">
                                         <p className='w-1/2'>Selecteer schrijver: </p>
                                         <select value={specifiedAuthorId} onChange={handleAuthorSelect} className='pickValue'> 
                                             {authors.map((author, index) => ( <option key={index} value={author.id}>{author.name} ({author.id})</option> ))} 
                                         </select>
                                     </div>
-                                    <div className="flex gap-2 items-center">
+                                    <div className="customFlex">
                                         <p className='w-1/2'>Selecteer genre: </p>
                                         <select value={specifiedGenreIds} onChange={handleGenreSelect} className='pickValue'> 
                                             {genres.map((genre, index) => ( <option key={index} value={genre.id}>{genre.name} ({genre.id})</option> ))} 
@@ -116,7 +92,7 @@ export default function Update({func, cat, onClose})
                                     <p>Genre: {specifiedGenreIds}</p>
 
                                     <button onClick={() => {
-                                        addBook(bookName, specifiedAuthorId, specifiedGenreIds)
+                                        addBook(bookName, specifiedAuthorId, specifiedGenreIds, setBooks)
                                         onClose()
                                     }} className='font-bold'>Toevoegen</button>
 
@@ -126,7 +102,7 @@ export default function Update({func, cat, onClose})
                             {func === "rem" && (
                                 <React.Fragment>
 
-                                    <div className="flex gap-2 items-center my-3">
+                                    <div className="customFlex">
                                         <p className='w-1/2'>Selecteer boek: </p>
                                         <select value={specifiedBookId} onChange={handleBookSelect} className='pickValue'> 
                                             {books.map((book, index) => ( <option key={index} value={book.id}>{book.name} ({book.id})</option> ))} 
@@ -137,7 +113,7 @@ export default function Update({func, cat, onClose})
 
                                     <p>Boek verwijderen: {specifiedBookId}</p>
                                     <button onClick={() => {
-                                        deleteBook(specifiedBookId)
+                                        deleteBook(specifiedBookId, setBooks)
                                         onClose()
                                     }} className='font-bold'>Verwijderen</button>
 
@@ -148,21 +124,21 @@ export default function Update({func, cat, onClose})
                                 
                                 <React.Fragment>
                                     
-                                    <div className="flex gap-2 items-center my-3">
+                                    <div className="customFlex">
                                         <p className='w-1/2'>Selecteer boek: </p>
                                         <select value={specifiedBookId} onChange={handleBookSelect} className='pickValue'> 
                                             {books.map((book, index) => ( <option key={index} value={book.id}>{book.name} ({book.id})</option> ))} 
                                         </select>
                                     </div>
 
-                                    <div className="flex gap-2 items-center my-3">
+                                    <div className="customFlex">
                                         <p className='w-1/2'>Nieuwe schrijver: </p>
                                         <select value={specifiedAuthorId} onChange={handleAuthorSelect} className='pickValue'> 
                                             {authors.map((author, index) => ( <option key={index} value={author.id}>{author.name} ({author.id})</option> ))} 
                                         </select>
                                     </div>
 
-                                    <div className="flex gap-2 items-center">
+                                    <div className="customFlex">
                                         <p className='w-1/2'>Nieuwe genre: </p>
                                         <select value={specifiedGenreIds} onChange={handleGenreSelect} className='pickValue'> 
                                             {genres.map((genre, index) => ( <option key={index} value={genre.id}>{genre.name} ({genre.id})</option> ))} 
@@ -178,7 +154,7 @@ export default function Update({func, cat, onClose})
                                     <p>Genre: {specifiedGenreIds}</p>
 
                                     <button onClick={() => {
-                                        updateBook(bookName, specifiedAuthorId, specifiedGenreIds, specifiedBookId)
+                                        updateBook(bookName, specifiedAuthorId, specifiedGenreIds, specifiedBookId, setBooks)
                                         onClose()
                                     }} className='font-bold'>Updaten</button>
 
@@ -198,8 +174,15 @@ export default function Update({func, cat, onClose})
                         {func === "add" && (
                             <React.Fragment>
 
-                                <input className='text-black placeholder:text-black block' value={authorName} onChange={handleNewAuthor} placeholder="Naam van schrijver" />
-                                <input className='text-black placeholder:text-black block' value={newAuthorAge} onChange={handleNewAuthorAge} placeholder="Leeftijd van schrijver" />
+                                <div className="customFlex">
+                                    <p className='w-1/2'>Naam van de schrijver: </p>
+                                    <input className='text-black placeholder:text-black block' value={authorName} onChange={handleNewAuthor}/>
+                                </div>
+                                
+                                <div className="customFlex">
+                                    <p className='w-1/2'>Naam van de schrijver: </p>
+                                    <input className='text-black placeholder:text-black block' value={newAuthorAge} onChange={handleNewAuthorAge}/>
+                                </div>
 
                                 <hr className='my-5'/>
 
@@ -207,7 +190,7 @@ export default function Update({func, cat, onClose})
                                 <p>Leeftijd: {newAuthorAge}</p>
 
                                 <button onClick={() => {
-                                    addAuthor(authorName, newAuthorAge)
+                                    addAuthor(authorName, newAuthorAge, setAuthors)
                                     onClose()
                                 }} className='font-bold'>Toevoegen</button>
 
@@ -217,7 +200,7 @@ export default function Update({func, cat, onClose})
                         {func === "rem" && (
                             <React.Fragment>
 
-                                <div className="flex gap-2 items-center my-3">
+                                <div className="customFlex">
                                     <p className='w-1/2'>Selecteer schrijver: </p>
                                     <select value={specifiedAuthorId} onChange={handleAuthorSelect} className='pickValue'> 
                                         {authors.map((author, index) => ( <option key={index} value={author.id}>{author.name} ({author.id})</option> ))} 
@@ -228,7 +211,7 @@ export default function Update({func, cat, onClose})
 
                                 <p>Boek verwijderen: {specifiedAuthorId}</p>
                                 <button onClick={() => {
-                                    deleteAuthor(specifiedAuthorId)
+                                    deleteAuthor(specifiedAuthorId, setAuthors, setBooks)
                                     onClose()
                                 }} className='font-bold'>Verwijderen</button>
 
@@ -238,12 +221,22 @@ export default function Update({func, cat, onClose})
                         {func === "upd" && (
                             <React.Fragment>
 
-                                <p className='w-1/2'>Selecteer schrijver: </p>
-                                <select value={specifiedAuthorId} onChange={handleAuthorSelect} className='pickValue'> 
-                                    {authors.map((author, index) => ( <option key={index} value={author.id}>{author.name} ({author.id})</option> ))} 
-                                </select>
-                                <input className='text-black placeholder:text-black block' value={authorName} onChange={handleNewAuthor} placeholder="Nieuwe naam" />
-                                <input className='text-black placeholder:text-black block' value={newAuthorAge} onChange={handleNewAuthorAge} placeholder="Nieuwe leeftijd" />
+                                <div className="customFlex">
+                                    <p className='w-1/2'>Selecteer schrijver: </p>
+                                    <select value={specifiedAuthorId} onChange={handleAuthorSelect} className='pickValue'> 
+                                        {authors.map((author, index) => ( <option key={index} value={author.id}>{author.name} ({author.id})</option> ))} 
+                                    </select>
+                                </div>
+
+                                <div className="customFlex">
+                                    <p className='w-1/2'>Nieuwe naam: </p>
+                                    <input className='text-black placeholder:text-black block' value={authorName} onChange={handleNewAuthor}/>
+                                </div>
+                                
+                                <div className="customFlex">
+                                    <p className='w-1/2'>Nieuwe leeftijd: </p>
+                                    <input className='text-black placeholder:text-black block' value={newAuthorAge} onChange={handleNewAuthorAge}/>
+                                </div>
 
                                 <hr className='my-5'/>
 
@@ -251,7 +244,7 @@ export default function Update({func, cat, onClose})
                                 <p>Nieuwe leeftijd: {newAuthorAge}</p>
 
                                 <button onClick={() => {
-                                    updateAuthor(authorName, newAuthorAge, specifiedAuthorId)
+                                    updateAuthor(authorName, newAuthorAge, specifiedAuthorId, setAuthors, setBooks)
                                     onClose()
                                 }} className='font-bold'>Updaten</button>
 
@@ -270,14 +263,17 @@ export default function Update({func, cat, onClose})
                         {func === "add" && (
                             <React.Fragment>
 
-                                <input className='text-black placeholder:text-black block' value={genreName} onChange={handleNewGenreName} placeholder="Naam van genre" />
+                                <div className="customFlex">
+                                    <p className='w-1/2'>Naam van de schrijver: </p>
+                                    <input className='text-black placeholder:text-black block' value={genreName} onChange={handleNewGenreName}/>
+                                </div>
                                 
                                 <hr className='my-5'/>
 
                                 <p>Naam: {genreName}</p>
 
                                 <button onClick={() => {
-                                    addGenre(genreName)
+                                    addGenre(genreName, setGenres)
                                     onClose()
                                 }} className='font-bold'>Toevoegen</button>
 
@@ -287,7 +283,7 @@ export default function Update({func, cat, onClose})
                         {func === "rem" && (
                             <React.Fragment>
 
-                                <div className="flex gap-2 items-center my-3">
+                                <div className="customFlex">
                                     <p className='w-1/2'>Selecteer genre: </p>
                                     <select value={specifiedGenreIds} onChange={handleGenreSelect} className='pickValue'> 
                                         {genres.map((genre, index) => ( <option key={index} value={genre.id}>{genre.name} ({genre.id})</option> ))} 
@@ -298,8 +294,8 @@ export default function Update({func, cat, onClose})
 
                                 <p>Genre verwijderen: {specifiedGenreIds}</p>
                                 <button onClick={() => {
-                                    deleteGenre(specifiedGenreIds)
-                                    onClose();
+                                    deleteGenre(specifiedGenreIds, setGenres, setBooks)
+                                    onClose()
                                 }} className='font-bold'>Verwijderen</button>
 
                             </React.Fragment>  
@@ -309,34 +305,32 @@ export default function Update({func, cat, onClose})
                         {func === "upd" && (
                             <React.Fragment>
 
-                                <div className="flex gap-2 items-center my-3">
+                                <div className="customFlex">
                                     <p className='w-1/2'>Selecteer genre: </p>
                                     <select value={specifiedGenreIds} onChange={handleGenreSelect} className='pickValue'> 
                                         {genres.map((genre, index) => ( <option key={index} value={genre.id}>{genre.name} ({genre.id})</option> ))} 
                                     </select>
                                 </div>
 
-                                <input className='text-black placeholder:text-black block' value={genreName} onChange={handleNewGenreName} placeholder="Nieuwe naam" />
+                                <div className="customFlex">
+                                    <p className='w-1/2'>Nieuwe naam: </p>
+                                    <input className='text-black placeholder:text-black block' value={genreName} onChange={handleNewGenreName}/>
+                                </div>
 
                                 <hr className='my-5'/>
 
                                 <p>Nieuwe naam: {genreName}</p>
                                 <button onClick={() => {
-                                    updateGenre(genreName, specifiedGenreIds)
+                                    updateGenre(genreName, specifiedGenreIds, setGenres, setBooks)
                                     onClose()
                                 }} className='font-bold'>Updaten</button>
 
                             </React.Fragment>  
                         )}
-
-                    
                     </React.Fragment>
                 )}
                 </React.Fragment>
-
             </div>
-            
-            
         </div>
     )
 }

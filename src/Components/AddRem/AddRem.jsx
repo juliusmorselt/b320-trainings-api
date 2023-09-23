@@ -8,7 +8,11 @@ import Update from '../Update/Update'
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
 import { FiRefreshCcw } from 'react-icons/fi'
 
+import { useAppContext } from '../../AppContext'
+
 export default function AddRem({categorie}) {
+
+    const { books, setBooks, authors, genres } = useAppContext();
     
     const [newType, setNewType] = useState(null)
     const [newBookClick, setNewBookClick] = useState(false)

@@ -42,3 +42,8 @@ code
 {
   @apply hover:scale-125 cursor-pointer transition-all;
 }
+
+.customFlex
+{
+  @apply flex gap-2 items-center my-3;
+}

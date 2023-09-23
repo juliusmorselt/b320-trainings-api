@@ -1,61 +1,28 @@
-//React
-import { useEffect, useState } from "react"
-
-//Functions
-import { fetchBooks, fetchAuthors, fetchGenres } from "../../functions";
+import React from "react";
 
 //Components
 import SmallCard from "../Cards/SmallCard"
 import AddRem from "../AddRem/AddRem";
 import Reset from "../../Reset/Reset";
 
+//AppContext
+import { useAppContext } from "../../AppContext";
+
 export default function ThreeLists() 
 {
-
-    const [books, setBooks] = useState([])
-    const [authors, setAuthors] = useState([])
-    const [genres, setGenres] = useState([])
-
-    useEffect(() => 
-    {
-        fetchBooks()
-            .then((booksRes) => { setBooks(booksRes) })
-            .catch((error) => 
-            {
-                console.error("Error in useEffect:", error)
-            })
-
-        fetchAuthors()
-            .then((authorsRes) => { setAuthors(authorsRes) })
-            .catch((error) => 
-            {
-                console.error("Error in useEffect:", error)
-            })
-            
-        fetchGenres()
-            .then((genresRes) => { setGenres(genresRes) })
-            .catch((error) => 
-            {
-                console.error("Error in useEffect:", error)
-            })
-    }, [])
-
+    const { books, authors, genres } = useAppContext();
     return (
-        <section className="container">
-            <Reset />
-
+        <section className="container py-24">
             <div>
                 <p className='categoryName'>Boeken | <AddRem categorie={"boek"} /></p>
                 <div className='labels'>
-                    {books.map((item, index) => {
-                        return (
-                            <SmallCard key={index} soort={"boek"} 
-                                content={item.name} 
-                                author={item.author_id} 
-                                genre={item.genre_id} 
-                            />
-                        )
-                    })}
+                    {books.map((item, index) => (
+                        <SmallCard key={index} soort={"boek"} 
+                            content={item.name} 
+                            author={item.author_id} 
+                            genre={item.genre_id} 
+                        />
+                    ))}
                 </div>
             </div>            
 
@@ -72,19 +39,18 @@ export default function ThreeLists()
                 </div>
             </div>
 
-            <div className="mt-6">
+            <div className="my-6">
                 <p className='categoryName'>Genres | <AddRem categorie={"genre"} /></p>
                 <div className='labels'>
-                {genres.map((item, index) => (
-                    <SmallCard key={index} 
-                        soort={"genre"} 
-                        content={item.name} 
-                        genreId={item.id} 
-                    />
-                ))}
+                    {genres.map((item, index) => (
+                        <SmallCard key={index} soort={"genre"} 
+                            content={item.name} 
+                            genreId={item.id} 
+                        />
+                    ))}
                 </div>
             </div>
-
+            <Reset />
         </section>
     )
 }

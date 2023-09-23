@@ -80,7 +80,7 @@ export async function fetchGenreById(genreId)
 
 
 
-export function addBook (bookName, specifiedAuthorId, specifiedGenreIds) 
+export function addBook (bookName, specifiedAuthorId, specifiedGenreIds, setBooks) 
 {
     fetch("http://api.training.theburo.nl/books", 
     {
@@ -97,11 +97,18 @@ export function addBook (bookName, specifiedAuthorId, specifiedGenreIds)
             genre_id: specifiedGenreIds
         })
     })
+    .then (response => response.json())
+    .then(newBook => {
+        setBooks(prevBooks => [...prevBooks, newBook])
+    })
+    .catch(error => {
+        console.error("Error adding book: ", error)
+    })
 }
 
 
 
-export function deleteBook (specifiedBookId) 
+export function deleteBook(specifiedBookId, setBooks) 
 {
     fetch(`http://api.training.theburo.nl/books/${specifiedBookId}`, 
     {
@@ -110,17 +117,30 @@ export function deleteBook (specifiedBookId)
         {
             "Content-Type": "application/json",
             "Accept": "application/json"
-        },
-        body: JSON.stringify
-        ({
-            id: specifiedBookId,
-        })
+        }
     })
+    .then(response => 
+    {
+        if (response.status === 204 || response.status === 200) 
+        {
+            fetchBooks().then(booksRes => setBooks(booksRes));
+        } 
+        else 
+        {
+            console.error("Error deleting book: ", response.status);
+        }
+    })
+    .catch(error => 
+    {
+        console.error("Error deleting book: ", error);
+    });
 }
+  
+  
+  
 
 
-
-export function updateBook (bookName, specifiedAuthorId, specifiedGenreIds, specifiedBookId) 
+export function updateBook (bookName, specifiedAuthorId, specifiedGenreIds, specifiedBookId, setBooks) 
 {
     fetch(`http://api.training.theburo.nl/books/${specifiedBookId}`, 
     {
@@ -137,11 +157,25 @@ export function updateBook (bookName, specifiedAuthorId, specifiedGenreIds, spec
             genre_id: specifiedGenreIds
         })
     })
+    .then(response => 
+    {
+        if (response.status === 204 || response.status === 200) 
+        {
+            fetchBooks().then(booksRes => setBooks(booksRes));
+        } 
+        else 
+        {
+            console.error("Error deleting book: ", response.status);
+        }
+    })
+    .catch(error => 
+    {
+        console.error("Error deleting book: ", error);
+    });
 }
 
 
-
-export function addAuthor(authorName, newAuthorAge) 
+export function addAuthor(authorName, newAuthorAge, setAuthors) 
 {
     fetch("http://api.training.theburo.nl/authors", 
     {
@@ -157,11 +191,18 @@ export function addAuthor(authorName, newAuthorAge)
             age: newAuthorAge 
         })
     })
+    .then (response => response.json())
+    .then(newAuthor => {
+        setAuthors(prevAuthors => [...prevAuthors, newAuthor])
+    })
+    .catch(error => {
+        console.error("Error adding author: ", error)
+    })
 }
 
 
 
-export function deleteAuthor(specifiedAuthorId) 
+export function deleteAuthor(specifiedAuthorId, setAuthors, setBooks) 
 {
     fetch(`http://api.training.theburo.nl/authors/${specifiedAuthorId}`, 
     {
@@ -170,17 +211,29 @@ export function deleteAuthor(specifiedAuthorId)
         {
             "Content-Type": "application/json",
             "Accept": "application/json"
-        },
-        body: JSON.stringify
-        ({
-            id: specifiedAuthorId,
-        })
+        }
+    })
+    .then(response => 
+    {
+        if (response.status === 204 || response.status === 200) 
+        {
+            fetchAuthors().then(authorsRes => setAuthors(authorsRes));
+            fetchBooks().then(booksRes => setBooks(booksRes));
+        } 
+        else 
+        {
+            console.error("Error deleting book: ", response.status);
+        }
+    })
+    .catch(error => 
+    {
+        console.error("Error deleting book: ", error);
     })
 }
 
 
 
-export function updateAuthor (authorName, newAuthorAge, specifiedAuthorId) 
+export function updateAuthor (authorName, newAuthorAge, specifiedAuthorId, setAuthors, setBooks) 
 {
     fetch(`http://api.training.theburo.nl/authors/${specifiedAuthorId}`, 
     {
@@ -196,11 +249,27 @@ export function updateAuthor (authorName, newAuthorAge, specifiedAuthorId)
             age: newAuthorAge,
         })
     })
+    .then(response => 
+    {
+        if (response.status === 204 || response.status === 200) 
+        {
+            fetchAuthors().then(authorsRes => setAuthors(authorsRes));
+            fetchBooks().then(booksRes => setBooks(booksRes));
+        } 
+        else 
+        {
+            console.error("Error updating author: ", response.status);
+        }
+    })
+    .catch(error => 
+    {
+        console.error("Error updating author: ", error);
+    })
 }
 
 
 
-export function addGenre(genreName) 
+export function addGenre(genreName, setGenres) 
 {
     fetch("http://api.training.theburo.nl/genres", 
     {
@@ -215,11 +284,18 @@ export function addGenre(genreName)
             name: genreName,
         })
     })
+    .then (response => response.json())
+    .then(newGenre => {
+        setGenres(prevGenres => [...prevGenres, newGenre])
+    })
+    .catch(error => {
+        console.error("Error adding author: ", error)
+    })
 }
 
 
 
-export function deleteGenre(specifiedGenreIds) 
+export function deleteGenre(specifiedGenreIds, setGenres, setBooks) 
 {
     fetch(`http://api.training.theburo.nl/genres/${specifiedGenreIds}`, 
     {
@@ -228,17 +304,29 @@ export function deleteGenre(specifiedGenreIds)
         {
             "Content-Type": "application/json",
             "Accept": "application/json"
-        },
-        body: JSON.stringify
-        ({
-            id: specifiedGenreIds,
-        })
+        }
+    })
+    .then(response => 
+    {
+        if (response.status === 204 || response.status === 200) 
+        {
+            fetchGenres().then(genreRes => setGenres(genreRes));
+            fetchBooks().then(booksRes => setBooks(booksRes));
+        } 
+        else 
+        {
+            console.error("Error deleting genre: ", response.status);
+        }
+    })
+    .catch(error => 
+    {
+        console.error("Error deleting genre: ", error);
     })
 }
 
 
 
-export function updateGenre (genreName, specifiedGenreIds) 
+export function updateGenre (genreName, specifiedGenreIds, setGenres, setBooks) 
 {
     fetch(`http://api.training.theburo.nl/genres/${specifiedGenreIds}`, 
     {
@@ -252,5 +340,21 @@ export function updateGenre (genreName, specifiedGenreIds)
         ({
             name: genreName
         })
+    })
+    .then(response => 
+    {
+        if (response.status === 204 || response.status === 200) 
+        {
+            fetchGenres().then(genreRes => setGenres(genreRes));
+            fetchBooks().then(booksRes => setBooks(booksRes));
+        } 
+        else 
+        {
+            console.error("Error updating genre: ", response.status);
+        }
+    })
+    .catch(error => 
+    {
+        console.error("Error updating genre: ", error);
     })
 }
