@@ -3,11 +3,9 @@ import { GrCircleInformation } from 'react-icons/gr'
 import Info from '../Info/Info'
 
 export default function SmallCard({ content, soort, author, authorAge, authorId, genre, genreId, className }) {
-    const [hover, isHover] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     const handleInfoClick = () => {
-        // Close the currently open Info component (if any)
         setIsOpen(!isOpen);
     };
 
@@ -17,8 +15,6 @@ export default function SmallCard({ content, soort, author, authorAge, authorId,
                 <p className="mb-0 px-3 py-3">{content}</p>
                 <GrCircleInformation
                     className='mr-3 transition-all hover:scale-110 hover:cursor-pointer'
-                    onMouseEnter={() => isHover(true)}
-                    onMouseLeave={() => isHover(false)}
                     onClick={handleInfoClick}
                 />
             </div>
